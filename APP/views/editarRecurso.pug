@@ -1,0 +1,68 @@
+extends layout
+
+block content
+    .w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color:white')
+                b Editar Recurso
+        form.w3-container(method="POST" action="/recurso/edit/" + Recurso._id enctype="multipart/form-data")
+            fieldset 
+                legend Metadata
+                label
+                    b Id
+                input.w3-input.w3-round(type="text" name="_id" value=Recurso._id readonly)
+                label
+                    b Tipo
+                select.w3-select.w3-round(name="tipo")
+                    each tipo in Tipos
+                        if tipo._id === Recurso.tipo
+                            option(value=tipo._id selected)= tipo.designacao
+                        else
+                            option(value=tipo._id)= tipo.designacao
+                label
+                    b Tema
+                input.w3-input.w3-round(type="text" name="tema" value=Recurso.tema)
+                label
+                    b Curso
+                select.w3-select.w3-round(name="cursoId")
+                    each curso in Cursos
+                        if curso._id === Recurso.cursoId
+                            option(value=curso._id selected)= curso.designacao
+                        else
+                            option(value=curso._id)= curso.designacao
+                label
+                    b Titulo
+                input.w3-input.w3-round(type="text" name="titulo" value=Recurso.titulo)
+                label
+                    b Subtítulo (Opcional)
+                input.w3-input.w3-round(type="text" name="subtitulo" value=Recurso.subtitulo)
+                label
+                    b Data de Criação
+                input.w3-input.w3-round(type="date" name="dataCriacao" value=Recurso.dataCriacao readonly)
+                label
+                    b Autor
+                input.w3-input.w3-round(type="text" name="autor" value=Recurso.autor readonly)
+
+                label
+                    b Visibilidade
+                .w3-margin-top
+                    .radio-container
+                        input(type="radio" name="visibilidade" value="true" id="publico" required checked=Recurso.visibilidade === true)
+                        label(for="publico") Público
+                    .radio-container
+                        input(type="radio" name="visibilidade" value="false" id="privado" checked=Recurso.visibilidade === false)
+                        label(for="privado") Privado
+
+                .w3-margin-top
+                    if Recurso.filePath
+                        label
+                            b Ficheiro atual:
+                        input.w3-input.w3-round(type="text" value=Recurso.filePath readonly)
+
+                label
+                    b Select new file
+                input.w3-input.w3-border.w3-light-grey(type="file" name="filePath")
+
+            br
+            button.w3-btn.w3-green.w3-mb-2(type="submit") 
+                b Guardar

@@ -1,0 +1,103 @@
+extends layout
+
+block content
+    if message
+      .popup-message(style="display: none;")
+        p= message
+    div.w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h1(style='color: white;')
+                b Perfil
+        div.w3-container
+            h2
+                b Informações do utilizador:
+            ul.w3-ul
+                li
+                    b Nome: 
+                    span= user.name 
+                li
+                    b Email: 
+                    span= user.email
+                li
+                    b Tipo Utilizador: 
+                    if (user.role == 0)
+                        span Consumidor (Aluno)
+                    else if (user.role == 1)
+                        span Produtor (Docente)
+                    else if (user.role == 2)
+                        span Administrador
+                li
+                    b Data Criação: 
+                    span= user.dateCreated
+        div.w3-container
+            a.w3-button.w3-margin(onClick="document.getElementById('chgProfileInfo').style.display='block'" style='background-color:SteelBlue; color : white') 
+                b Editar Perfil
+            a.w3-button.w3-red(onClick="document.getElementById('chgPasswdModal').style.display='block'") 
+                b Alterar Password
+
+    .w3-modal(id='chgProfileInfo')
+        .w3-modal-content.w3-animate-zoom(style='padding: 0px')
+            header.w3-container.w3-margim-bottom(style='background-color:SteelBlue')
+                span.w3-button.w3-display-topright(onclick="document.getElementById('chgProfileInfo').style.display='none'")
+                    i.fa-solid.fa-xmark
+                h2(style='color: white;')
+                    b Editar Perfil
+            .w3-container.w3-margin-top
+                form(action='/profile/edit' method='POST')
+                    label(for="name") 
+                      i.fa-regular.fa-user
+                      b   Nome:
+                    input.w3-input(type="text" id="name" name="name" placeholder="Nome" value=user.name required)
+                    label(for="email") 
+                      i.fa-regular.fa-envelope
+                      b   Email:
+                    input.w3-input(type="email" id="email" name="email" placeholder="Email" value=user.email required)
+                    button.w3-button.w3-margin-bottom(type="submit" style='background-color:SteelBlue; color : white') 
+                        b Guardar Alterações
+                    
+    .w3-modal(id='chgPasswdModal')
+        .w3-modal-content.w3-animate-zoom(style='padding: 0px')
+            header.w3-container.w3-margim-bottom(style='background-color:SteelBlue')
+                span.w3-button.w3-display-topright(onclick="document.getElementById('chgPasswdModal').style.display='none'")
+                    i.fa-solid.fa-xmark
+                h2(style='color: white;')
+                    b Alterar Password
+            .w3-container.w3-margin-top
+                form(action="/profile/password/edit" method="POST")
+                    label(for="old")
+                        b Password atual:
+                    .password-container
+                        input.w3-input.pwd(type="password" id="old" name="old" required)
+                        i.passwordToggle.fa-solid.fa-eye-slash(style='cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);')
+                    label(for="new")
+                        b Nova Password:
+                    .password-container
+                        input.w3-input.pwd(type="password" id="new" name="new" required)
+                        i.passwordToggle.fa-solid.fa-eye-slash(style='cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);')
+                    label(for="confirm")
+                        b Confirmar Nova Password:
+                    .password-container
+                        input.w3-input.pwd(type="password" id="confirm" name="confirm" required)
+                        i.passwordToggle.fa-solid.fa-eye-slash(style='cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);')
+                    button.w3-button.w3-margin-bottom(type="submit" style='background-color:SteelBlue; color : white') 
+                        b Alterar Password
+
+    script(src='/javascripts/password.js')
+    script.
+        document.addEventListener('DOMContentLoaded', function() {
+            var popup = document.querySelector('.popup-message');
+            if (popup) {
+              popup.style.display = 'block';
+              setTimeout(function() {
+                popup.classList.add('show');
+              }, 100); // Delay to allow CSS transition to work
+        
+              // Remove the popup after 5 seconds
+              setTimeout(function() {
+                popup.classList.remove('show');
+                setTimeout(function() {
+                  popup.style.display = 'none';
+                }, 500); // Match this duration with the CSS transition duration
+              }, 5000);
+            }
+        })

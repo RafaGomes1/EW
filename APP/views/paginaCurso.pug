@@ -1,0 +1,213 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-container
+    // Informações do curso dentro de um card
+    .w3-card-4.w3-margin-top
+      .curso-content.w3-black
+        .button-and-info
+          a.button-circle.back(href='/curso')
+            i.fa.fa-arrow-left
+            span.popup-text Voltar
+          header.w3-container
+            h2 Informações do Curso
+        .button-container-curso
+          if (userRole === 1 && userId === Curso.idProdutor) || userRole === 2
+            a.button-circle.edit(href=`/curso/edit/${Curso._id}`)
+              i.fa.fa-pencil
+              span.popup-text Editar Curso
+            a.button-circle.remove(href=`/curso/delete/${Curso._id}`)
+              i.fa.fa-times
+              span.popup-text Eliminar Curso
+          if isFavorite
+            div#favButton.button-circle.fav(data-id=`${Curso._id}` data-type="curso" data-action='remove')
+              i.favIcon.fa-solid.fa-heart-circle-minus
+              span.popup-text Remover dos Favoritos
+          else
+            div#favButton.button-circle.fav(data-id=`${Curso._id}` data-type="curso" data-action='add')
+              i.favIcon.fa-solid.fa-heart-circle-plus
+              span.popup-text Adicionar aos Favoritos
+
+
+      // Aqui você pode adicionar as informações do curso
+      .w3-container
+        p
+          b Curso:
+          |  #{Curso.designacao}
+        p
+          b Descrição:
+          |  #{Curso.descricao}
+        p
+          b Produtor (Docente):
+          |  #{Produtor}
+
+    // Lista de recursos disponíveis do curso
+    .w3-card-4
+      .curso-content.w3-light-blue
+        .header-and-button-curso
+          header.w3-container
+            h2 Recursos Disponíveis
+          if (userRole === 1 && userId === Curso.idProdutor) || userRole === 2
+            a.button-circle.add(href='/recurso/adicionar/' + Curso._id)
+              i.fa-plus
+              span.popup-text Adicionar Recurso
+        .w3-container.w3-flex
+          .w3-flex-right
+            .w3-bar
+              input.w3-bar-item.w3-input#filterInput(type="text", placeholder="Pesquisar por nome")
+              select.w3-bar-item.w3-select#sortSelect
+                option(value="alphabeticalAsc") Ordem Alfabética (A-Z)
+                option(value="alphabeticalDesc") Ordem Alfabética (Z-A)
+                option(value="dateAsc") Data de Registo (Crescente)
+                option(value="dateDesc") Data de Registo (Decrescente)
+                option(value="ratingAsc") Avaliação Média (Crescente)
+                option(value="ratingDesc") Avaliação Média (Decrescente)
+
+      // Aqui você pode adicionar uma lista de recursos
+      if userRole === 1 || userRole === 2
+        .w3-container
+          .w3-row-padding#resourceContainer
+            each idRecurso in Curso.listaRecursos
+              - var recursoEncontrado = Recursos.find(recurso => recurso._id === idRecurso)
+              if recursoEncontrado
+                - var ratings = JSON.stringify(recursoEncontrado.classificacao)
+                if recursoEncontrado.visibilidade
+                  .w3-col.s12.m6.l4.resource-card(data-name=recursoEncontrado.titulo, data-date=recursoEncontrado.dataRegisto, data-ratings=ratings)
+                      .w3-card-4.w3-margin
+                        .w3-container.w3-padding.w3-display-flex
+                          .recurso-info-card
+                            a(href=`/recurso/${idRecurso}`, class="no-underline")
+                              b #{recursoEncontrado.titulo}
+                              p.small #{new Date(recursoEncontrado.dataRegisto).toLocaleDateString()}
+                            .recurso-button  
+                              a.b-circle-locker(href='/recurso/bloquear/' + idRecurso)
+                                i.fa.fa-lock
+                                span.popup-text Bloquear Recurso
+
+
+                else
+                  .container-visibilidade
+                    .w3-col.s12.m6.l4.resource-card(data-name=recursoEncontrado.titulo, data-date=recursoEncontrado.dataRegisto, data-ratings=ratings)
+                      .w3-card-4.w3-margin
+                        .w3-container.w3-padding.w3-display-flex
+                          .recurso-info-card
+                            a(href=`/recurso/${idRecurso}`, class="no-underline")
+                              b #{recursoEncontrado.titulo}
+                              p.small #{new Date(recursoEncontrado.dataRegisto).toLocaleDateString()}
+                            .recurso-button
+                              a.b-circle-locker(href='/recurso/desbloquear/' + idRecurso)
+                                i.fa.fa-unlock
+                                span.popup-text Desbloquear Recurso
+      else
+        .w3-container
+          .w3-row-padding#resourceContainer
+            each idRecurso in Curso.listaRecursos
+              - var recursoEncontrado = Recursos.find(recurso => recurso._id === idRecurso)
+              if recursoEncontrado
+                - var ratings = JSON.stringify(recursoEncontrado.classificacao)
+                if recursoEncontrado.visibilidade
+                  .w3-col.s12.m6.l4.resource-card(data-name=recursoEncontrado.titulo, data-date=recursoEncontrado.dataRegisto, data-ratings=ratings)
+                      .w3-card-4.w3-margin
+                        .w3-container.w3-padding
+                            a(href=`/recurso/${idRecurso}`, class="no-underline")
+                              b #{recursoEncontrado.titulo}
+                              p.small #{new Date(recursoEncontrado.dataRegisto).toLocaleDateString()}
+
+
+  // Popup message container
+  .popup-notification(style="display: none;")
+    p.popup-message-fav
+
+  script(src='/javascripts/favoritos.js')
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+
+      var filterInput = document.getElementById('filterInput');
+      var sortSelect = document.getElementById('sortSelect');
+      var resourceContainer = document.getElementById('resourceContainer');
+
+      filterInput.addEventListener('input', filterResources);
+      sortSelect.addEventListener('change', sortResources);
+
+      function filterResources() {
+        var filter = filterInput.value.toLowerCase();
+        var resourceCards = resourceContainer.getElementsByClassName('resource-card');
+        
+        Array.from(resourceCards).forEach(function(card) {
+          var title = card.getAttribute('data-name').toLowerCase();
+          if (title.indexOf(filter) > -1) {
+            card.style.display = "";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      }
+
+      function sortResources() {
+        var sortValue = sortSelect.value;
+        var resourceCards = Array.from(resourceContainer.getElementsByClassName('resource-card'));
+
+        console.log(resourceCards)
+
+        resourceCards.sort(function(a, b) {
+          var nameA = a.getAttribute('data-name').toLowerCase();
+          var nameB = b.getAttribute('data-name').toLowerCase();
+          var dateA = new Date(a.getAttribute('data-date'));
+          var dateB = new Date(b.getAttribute('data-date'));
+
+          var ratingsA = JSON.parse(a.getAttribute('data-ratings'));
+          var ratingsB = JSON.parse(b.getAttribute('data-ratings'));
+
+          var averageRatingA = calculateAverageRating(ratingsA);
+          var averageRatingB = calculateAverageRating(ratingsB);
+
+          switch (sortValue) {
+            case 'alphabeticalAsc':
+              return nameA.localeCompare(nameB);
+            case 'alphabeticalDesc':
+              return nameB.localeCompare(nameA);
+            case 'dateAsc':
+              return dateA - dateB;
+            case 'dateDesc':
+              return dateB - dateA;
+            case 'ratingAsc':
+                return averageRatingA - averageRatingB;
+            case 'ratingDesc':
+                return averageRatingB - averageRatingA;
+            default:
+              return 0;
+          }
+        });
+
+        resourceCards.forEach(function(card) {
+          resourceContainer.appendChild(card);
+        });
+      }
+
+      function calculateAverageRating(ratings) {
+      if (ratings.length === 0) return 0;
+      var total = ratings.reduce(function(sum, rating) {
+          return sum + rating.nrEstrelas;
+      }, 0);
+      return total / ratings.length;
+      }
+    });

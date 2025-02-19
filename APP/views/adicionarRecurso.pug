@@ -1,0 +1,174 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-container
+    // Informações do formulário dentro de um card
+    .w3-card-4.w3-margin-top
+      header.w3-container(style='background-color:SteelBlue')
+        h2(style='color:white')
+          b Adicionar Recurso - Manualmente
+
+      form.w3-container(method="POST" action="/recurso/adicionar/" + Curso enctype="multipart/form-data")
+        .w3-row-padding
+          .w3-half
+            fieldset
+              label
+                b Tipo
+              select.w3-select.w3-round(name="tipo" required)
+                option(value="" disabled selected) Selecione um tipo
+                each tipo in Tipos
+                  option(value=tipo._id)=tipo.designacao
+              label
+                b Tema
+              input.w3-input.w3-round(type="text" name="tema" placeholder="Introduza um Tema" required)
+              label
+                b Título
+              input.w3-input.w3-round(type="text" name="titulo" placeholder="Introduza um Título" required)
+              label
+                b Subtítulo (Opcional)
+              input.w3-input.w3-round(type="text" name="subtitulo")
+              label
+                b Data de Criação
+              input.w3-input.w3-round(type="date" name="dataCriacao" required)
+              label
+                b Autor
+              input.w3-input.w3-round(type="text" name="autor" placeholder="Introduza um Autor" required)
+
+              label
+                b Visibilidade
+              .w3-margin-top
+                .radio-container
+                  input(type="radio" name="visibilidade" value="true" id="publico" required)
+                  label(for="publico") Público
+                .radio-container
+                  input(type="radio" name="visibilidade" value="false" id="privado")
+                  label(for="privado") Privado
+
+              label
+                b Selecione um ficheiro
+              input.w3-input.w3-border.w3-light-grey(type="file" name="filePath")
+
+          .w3-half
+            #customFieldsContainer.w3-margin-top
+              h3 Adicionar Campo
+              button.w3-btn.w3-blue(type="button" onclick="toggleCustomFieldForm()") +
+              #customFieldForm(style="display: none;")
+                label.w3-text-teal
+                  b Nome do Campo
+                input.w3-input.w3-round(type="text" id="customFieldName" placeholder="Introduza o Nome do Campo")
+                label.w3-text-teal
+                  b Tipo de Dados
+                select.w3-select.w3-round(id="customFieldType" onchange="displayCustomFieldInput()")
+                  option(value="text") Texto
+                  option(value="number") Número
+                  option(value="date") Data
+                .customFieldContent.w3-margin-top
+                  #specificInput
+                button.w3-btn.w3-blue.w3-margin-top(type="button" onclick="addCustomField()") Adicionar
+            #customFieldFormContainer
+
+        br
+        button.w3-btn.w3-green.w3-margin-bottom(type="submit")
+          b Adicionar
+
+    // Seção para upload de JSON
+    .w3-card-4.w3-margin-top
+      header.w3-container.w3-black
+        h2 Adicionar Recurso - Via JSON
+
+      form.w3-container(method="POST" action="/recurso/adicionarJson" enctype="multipart/form-data")
+        .w3-row-padding
+          .w3-half
+            label Ficheiro JSON 
+            input.w3-input.w3-border.w3-light-grey(type="file" name="jsonFile" accept=".json" required)
+            br
+            label Ficheiro ZIP
+            input.w3-input.w3-border.w3-light-grey(type="file" name="zipFile" accept=".zip" required)
+            button.w3-btn.w3-green.w3-margin-bottom(type="submit")
+              b Adicionar
+
+
+  script.
+    function toggleCustomFieldForm() {
+      var form = document.getElementById('customFieldForm');
+      form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+      displayCustomFieldInput();
+    }
+
+    function displayCustomFieldInput() {
+      var fieldType = document.getElementById('customFieldType').value;
+      var specificInput = document.getElementById('specificInput');
+      specificInput.innerHTML = '';
+
+      var input = document.createElement('input');
+      input.type = fieldType === 'text' || fieldType === 'number' ? fieldType : 'date';
+      input.className = 'w3-input w3-round';
+      input.id = 'customFieldValue';
+      input.placeholder = 'Introduza o Valor do Conteúdo'; // Adiciona o placeholder
+      input.required = true;
+      specificInput.appendChild(input);
+    }
+
+    function addCustomField() {
+      var fieldName = document.getElementById('customFieldName').value;
+      var fieldType = document.getElementById('customFieldType').value;
+      var fieldInput = document.getElementById('customFieldValue');
+
+      if (!fieldName) {
+        alert('Por favor, insira um nome para o campo.');
+        return;
+      }
+
+      if (!fieldInput.value) {
+        alert('Por favor, insira um valor para o campo.');
+        return;
+      }
+
+      var container = document.getElementById('customFieldsContainer');
+      var fieldContainer = document.createElement('div');
+      fieldContainer.className = 'w3-margin-top custom-field';
+
+      var label = document.createElement('label');
+      label.className = 'w3-text-teal';
+      label.innerHTML = '<b>' + fieldName + '</b>';
+      fieldContainer.appendChild(label);
+
+      var input = document.createElement('input');
+      input.type = fieldType;
+      input.className = 'w3-input w3-round custom-field-input';
+      input.name = fieldName; // Nome do campo sem conversão para minúsculas
+      input.value = fieldInput.value;
+      input.placeholder = 'Introduza o Valor do Conteúdo';
+      input.readOnly = true;
+      fieldContainer.appendChild(input);
+
+      var deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.className = 'w3-btn w3-red w3-margin-top delete-btn';
+      deleteButton.innerHTML = '&times;'; // Botão em forma de cruz (X)
+      deleteButton.onclick = function() {
+        container.removeChild(fieldContainer);
+      };
+      fieldContainer.appendChild(deleteButton);
+
+      container.appendChild(fieldContainer);
+
+      document.getElementById('customFieldName').value = '';
+      document.getElementById('customFieldType').value = 'text';
+      document.getElementById('specificInput').innerHTML = '';
+      document.getElementById('customFieldForm').style.display = 'none';
+
+      // Adiciona evento de clique para edição diretamente no campo
+      input.onclick = function() {
+        editCustomField(input);
+      };
+    }
+
+    function editCustomField(input) {
+      input.readOnly = false;
+      input.focus(); // Foca no campo para edição
+    }

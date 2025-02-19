@@ -1,0 +1,59 @@
+doctype html
+html
+  head
+    title Registo de Conta
+    link(rel='stylesheet', href='/stylesheets/w3.css')
+    link(rel='stylesheet', href='/stylesheets/loginPage.css')
+    link(rel='icon', type='image/x-icon' href='/images/favicon.png')
+    script(src='/javascripts/jquery-3.7.1.min.js')
+    script(src='/javascripts/password.js')
+    script(src="https://kit.fontawesome.com/ffb4151c72.js")
+  body
+    header.header
+      div.logo
+        img(src='/images/Logotipo.png', alt='Logotipo')
+    div.main-content
+      div.container.register
+        div.titleWrapper
+          h2 
+            b Criar uma conta
+        form(action="/register" method="POST")
+          label(for="name") 
+            i.fa-regular.fa-user
+            b   Nome:
+          input.w3-input(type="text" id="name" name="name" placeholder="Nome" value=userData.name required)
+          label(for="email") 
+            i.fa-regular.fa-envelope
+            b   Email:
+          input.w3-input(type="email" id="email" name="email" placeholder="Email" value=userData.email required)
+          label(for="password") 
+            i.fa-solid.fa-lock
+            b   Password:
+          div.input-container
+            input.w3-input.pwd(type="password" id="password" name="password" placeholder="Password" value=userData.password required)
+            i.passwordToggle.fa-solid.fa-eye-slash
+          label(for="confirm") 
+            i.fa-solid.fa-lock
+            b   Confirme a Password:
+          div.input-container
+            input.w3-input.pwd(type="password" id="confirm" name="confirm" placeholder="Confirme a Password" value=userData.confirm required)
+            i.passwordToggle.fa-solid.fa-eye-slash
+          label
+            i.fa-solid.fa-chalkboard-user
+            b   Tipo de Utilizador:
+          br
+          input.w3-radio(type="radio" id="tipoConsumidor" name="tipoUser" value=0 required)
+          label(for='tipoConsumidor') Consumidor
+          input.w3-radio.w3-margin-left(type="radio" id="tipoProdutor" name="tipoUser" value=1 required)
+          label(for='tipoProdutor') Produtor
+          if warning 
+            .w3-panel.w3-pale-yellow
+              .w3-container.w3-section
+                i.fa-solid.fa-triangle-exclamation
+                b  #{warning}
+          div.button-wrapper
+            button(type="submit") 
+              b Registar Conta
+        div.signup-wrapper
+          p Já possui conta? 
+            a(href='/login') Login

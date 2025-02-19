@@ -1,0 +1,46 @@
+doctype html
+html
+  head
+    title Login
+    link(rel='stylesheet', href='/stylesheets/w3.css')
+    link(rel='stylesheet', href='/stylesheets/loginPage.css')
+    link(rel='icon', type='image/x-icon' href='/images/favicon.png')
+    script(src='/javascripts/jquery-3.7.1.min.js')
+    script(src='/javascripts/password.js')
+    script(src="https://kit.fontawesome.com/ffb4151c72.js")
+  body
+    header.header
+      div.logo
+        img(src='/images/Logotipo.png', alt='Logotipo')
+    div.main-content
+      div.container
+        div.titleWrapper
+          h2 
+            b Bem-Vindo!
+        form(action="/login" method="POST")
+          label(for="email") 
+            i.fa-regular.fa-envelope
+            b   Email:
+          input.w3-input(type="email" id="email" name="email" placeholder="Email" value=loginData.email autofocus required)
+          label(for="password") 
+            i.fa-solid.fa-lock
+            b   Password:
+          div.input-container
+            input.w3-input.pwd(type="password" id="password" name="password" placeholder="Password" value=loginData.password required)
+            i.passwordToggle.fa-solid.fa-eye-slash
+          div.button-wrapper
+            button(type="submit") 
+              b Iniciar Sessão
+          if warning
+            .w3-panel.w3-pale-red
+              .w3-container.w3-section
+                i.fa-solid.fa-triangle-exclamation
+                b  #{warning}
+        div.otherAuth-wrapper
+          p 
+            b Em alternativa, inicie sessão com:
+          a(href='/login/google')
+            img(src="/images/google-icon.png", alt="Google")   
+        div.signup-wrapper
+          p Não Possui conta? 
+            a(href='/register') Criar nova Conta.

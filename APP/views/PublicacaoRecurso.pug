@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color:white')
+                b Criar Publicação
+        form#publicacaoForm.w3-container(method="POST" action="/recurso/publicacao/adicionar/" + Recurso._id)
+            fieldset
+                label
+                    b Conteúdo
+                input.w3-input.w3-round(type="text" name="conteudo" placeholder="Introduza um conteudo" required)
+                
+            br
+            button#publicarBtn.w3-btn.w3-green.w3-mb-2(type="submit") 
+                b Publicar

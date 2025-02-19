@@ -1,0 +1,57 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+
+  .w3-container
+    .w3-card-4.w3-margin-top
+      .curso-content(style='background-color:SteelBlue')
+        .button-and-info
+          a.button-circle.back(href='/noticia')
+            i.fa.fa-arrow-left
+            span.popup-text Voltar
+          header.w3-container
+            h2(style='color:white')
+              b Notícia
+        if userRole === 2
+          .button-container-curso
+            a.button-circle.edit(href=`/noticia/edit/${Noticia._id}`)
+              i.fa.fa-pencil
+              span.popup-text Editar Notícia
+            a.button-circle.remove(href=`/noticia/delete/${Noticia._id}`)
+              i.fa.fa-times
+              span.popup-text Eliminar Notícia
+      .card
+        .card-content
+          p= Noticia.conteudo
+          p
+            a(href="/recurso/" + Noticia.idRecurso) Link do Recurso    
+        .card-info
+          p
+            span.info-label Publicado por:
+            span.info-content #{Noticia.autor}
+          p
+            span.info-label Publicado em:
+            span.info-content #{Noticia.dataNoticia}
+  
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+    });

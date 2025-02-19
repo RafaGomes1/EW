@@ -140,6 +140,6 @@ O Projeto atingiu os objetivos estabelecidos, fornecendo uma aplicação web rob
 
 <div align="center">
 
-| [Lucas Oliveira](https://github.com/LucasOli20) | [Mike Pinto](https://github.com/mrmikept) | [Rafael Gomes](https://github.com/RafaGomes1) |
+| [Carlos Filipe](https://github.com/cfad98) | [Lucas Oliveira](https://github.com/LucasOli20) | [Mike Pinto](https://github.com/mrmikept) | [Rafael Gomes](https://github.com/RafaGomes1) |
 
 </div>

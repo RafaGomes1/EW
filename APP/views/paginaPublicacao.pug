@@ -1,0 +1,77 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-container.w3-center
+    header.w3-container
+      .curso-content(style='background-color:SteelBlue')
+        .button-and-info
+          a.button-circle.back(href='/publicacao' style='margin-right: 10px')
+            i.fa.fa-arrow-left
+            span.popup-text Voltar
+          h1(style='color:white')
+            b Publicação
+        if userRole === 2 || userId === Publicacao.idAutor
+          .button-container-curso
+            a.button-circle.edit(href=`/publicacao/edit/${Publicacao._id}`)
+              i.fa.fa-pencil
+              span.popup-text Editar Publicação
+            a.button-circle.remove(href=`/publicacao/delete/${Publicacao._id}`)
+              i.fa.fa-times
+              span.popup-text Eliminar Publicação
+
+    .pub-card
+      .pub-content-section
+        p #{Publicacao.conteudo}
+      
+      .pub-info-section
+        p
+          span.info-label Publicado por:
+          span.info-content #{Publicacao.autor}
+        p
+          span.info-label Data de Publicação:
+          span.info-content #{Publicacao.dataRegisto}
+        p
+          span.info-label Recurso:
+          span.info-content
+            a(href=`/recurso/${Recurso._id}` class="no-underline") #{Recurso.titulo}
+
+    .pub-comments-section
+      h2 Comentários
+      // Lista de comentários existentes
+      each comment in Publicacao.listaComentarios
+        .pub-comment
+          p
+            span.pub-comment-author #{comment.nomeUser}: 
+            span.pub-comment-content #{comment.comentario}
+
+      // Formulário para adicionar um novo comentário
+      form(method='post', action='/publicacao/' + Publicacao._id + '/adicionar-comentario')
+        .pub-form-group
+          label(for='comentario') Adicionar comentário:
+          textarea#comentario(name='comentario', rows='3', required)
+        .pub-form-group
+          button.w3-button(style='background-color:SteelBlue; color : white')(type='submit') Comentar
+  
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+    });
+

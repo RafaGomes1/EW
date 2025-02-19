@@ -1,0 +1,161 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-container
+    .curso-content(style='background-color:SteelBlue')
+      .button-and-info
+        a.button-circle.back(href='/curso/' + Recurso.cursoId)
+          i.fa.fa-arrow-left
+          span.popup-text Voltar
+        header.w3-container
+          h1(style='color:white')
+            b Recurso: #{Recurso.titulo}
+      if userRole === 1 || userRole === 2
+        .button-container-curso
+            a.button-circle.edit(href=`/recurso/edit/${Recurso._id}`)
+              i.fa.fa-pencil
+              span.popup-text Editar Recurso
+            a.button-circle.remove(href=`/recurso/delete/${Recurso._id}`)
+              i.fa.fa-times
+              span.popup-text Eliminar Recurso
+            a.button-circle.post(href=`/recurso/publicacao/${Recurso._id}`)
+              i.fa-solid.fa-pen-to-square
+              span.popup-text Publicação sobre o Recurso
+            if isFavorite
+              div#favButton.button-circle.fav(data-id=`${Recurso._id}` data-type="recurso" data-action='remove')
+                i.favIcon.fa-solid.fa-heart-circle-minus
+                span.popup-text Remover dos Favoritos
+            else
+              div#favButton.button-circle.fav(data-id=`${Recurso._id}` data-type="recurso" data-action='add')
+                i.favIcon.fa-solid.fa-heart-circle-plus
+                span.popup-text Adicionar aos Favoritos
+      else
+        .button-container-curso
+          a.button-circle.post(href=`/recurso/publicacao/${Recurso._id}`)
+            i.fa-solid.fa-pen-to-square
+            span.popup-text Publicação sobre o Recurso
+          if isFavorite
+            div#favButton.button-circle.fav(data-id=`${Recurso._id}` data-type="recurso" data-action='remove')
+              i.favIcon.fa-solid.fa-heart-circle-minus
+              span.popup-text Remover dos Favoritos
+          else
+            div#favButton.button-circle.fav(data-id=`${Recurso._id}` data-type="recurso" data-action='add')
+              i.favIcon.fa-solid.fa-heart-circle-plus
+              span.popup-text Adicionar aos Favoritos
+              
+    .card-Recurso
+      .info-section.w3-left-align
+        p
+          span.info-label Tipo de Recurso: 
+          span.info-content #{TipoRecurso.designacao}
+
+        p
+          span.info-label Tema do Recurso: 
+          span.info-content #{Recurso.tema}
+
+        p
+          span.info-label Curso: 
+          span.info-content #{Curso.designacao}
+
+        p
+          span.info-label Criado por: 
+          span.info-content #{Recurso.autor}
+
+        p
+          span.info-label Criado em: 
+          span.info-content #{Recurso.dataCriacao}
+
+        p
+          span.info-label Publicado em: 
+          span.info-content #{Recurso.dataRegisto}
+
+        p
+          span.info-label Publicado por: 
+          span.info-content #{Produtor}
+
+        - var classif = 0
+
+        each cla in Recurso.classificacao
+          - classif += cla.nrEstrelas
+
+        - var media = Recurso.classificacao.length ? (classif / Recurso.classificacao.length).toFixed(2) : 0
+
+        - media = isNaN(media) ? 0 : media
+
+        p
+          span.info-label Classificação média: 
+          span.info-content #{media}⭐️
+
+        each key in Object.keys(Recurso.customFields)
+          p
+            span.info-label #{key}: 
+            span.info-content #{Recurso.customFields[key]}
+
+      .button-container
+        a.button-circle.view#consultar-button(data-filepath=`${Recurso.filePath}`)
+          img(src='/images/file_eye_icon.png', alt='FileEyeIcon', style='width : 25px; filter: invert(1);')
+          span.popup-text Consultar Recurso
+        //- button.w3-button.w3-blue.w3-small#consultar-button(data-filepath=`${Recurso.filePath}`) Consultar
+        a.button-circle.download(href=`/recurso/download/${Recurso.filePath}`)
+          i.fa-solid.fa-download
+          span.popup-text Transferir Recurso
+        //- a.w3-button.w3-green.w3-small(href=`/recurso/download/${Recurso.filePath}`) Descarregar
+        a.button-circle.review(onclick="document.getElementById('id03').style.display='block'")
+          i.fa-solid.fa-star
+          span.popup-text Avaliar Recurso
+        //- button.w3-button.w3-orange.w3-small(onclick="document.getElementById('id03').style.display='block'") Classificar
+
+    .card-list
+      each post in Posts
+        a.card(href=`/publicacao/${post._id}` class="no-underline")
+          p= post.conteudo
+          p
+            | Autor: #{post.autor}
+          p
+            | Data: #{post.dataRegisto}
+
+    // Modal Classificar
+    .w3-modal(id="id03")
+      .w3-modal-content
+        .w3-container4
+          span.w3-button.w3-display-topright(onclick="document.getElementById('id03').style.display='none'") &times;
+          h2 Classificar Recurso
+          form(method='POST', action=`/recurso/classificar/${Recurso._id}`)
+            p Quantas estrelas (0 a 5)?
+            input(type='number', name='nrEstrelas', min='0', max='5', required, style='margin-right : 10px;')
+            button.w3-button(type='submit' style='background-color:SteelBlue; color : white') Submeter
+
+    // Modal Display
+    .w3-modal#display
+      .w3-modal-content
+        .w3-container
+          span.w3-button.w3-display-topright(onclick="document.getElementById('display').style.display='none'") &times;
+          // This div will be dynamically updated with the content
+  
+  // Popup message container
+  .popup-notification(style="display: none;")
+    p.popup-message-fav
+
+  script(src='/javascripts/favoritos.js')
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+    });

@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+    title #{title}
+    link(rel='stylesheet', href='/stylesheets/w3.css')
+    link(rel='icon', type='image/x-icon' href='/images/favicon.png')
+    body
+    header.w3-teal.w3-center 
+        h1 #{infoTitle}
+    div.w3-container
+        p #{infoContent}
+        a.w3-btn.w3-teal(href=redirectURL) #{btnText}
+

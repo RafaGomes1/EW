@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    .w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color:white') 
+                b Criar um Curso
+        form.w3-container(method="POST" action="/curso/adicionar")
+            fieldset
+                label
+                    b Designação
+                input.w3-input.w3-round(type="text" name="designacao" placeholder= "Introduza uma designação" required)
+                label
+                    b Descrição
+                input.w3-input.w3-round(type="text" name="descricao" placeholder= "Introduza uma descrição" required)
+            br
+            button.w3-btn.w3-green.w3-mb-2(type="submit") 
+                b Adicionar

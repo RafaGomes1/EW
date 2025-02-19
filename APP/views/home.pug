@@ -1,0 +1,115 @@
+extends layout
+
+block content
+    link(rel='stylesheet', href='/stylesheets/home.css')
+
+    .w3-card.w3-white.w3-margin
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color: white; font-weight: bold; font-size: 2rem;')
+                i.fa-solid.fa-graduation-cap
+                b  Cursos Favoritos
+        .w3-container
+            if (cursos)
+                .w3-row-padding#resourceContainer
+                    each elem in cursos
+                        .w3-col.s12.m6.l4.resource-card(data-name=elem.designacao, data-date=elem.descricao)
+                            .w3-card-4.w3-margin
+                                .w3-container
+                                    a(href=`/curso/${elem._id}`, class="no-underline")
+                                        b #{elem.designacao}
+                                            if elem.descricao.length > 50
+                                                p.small #{elem.descricao.substring(0,47) + "..."} 
+                                            else 
+                                                p.small #{elem.descricao} 
+            else
+                p.small Sem cursos favoritos
+
+    .w3-card.w3-white.w3-margin
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color: white; font-weight: bold; font-size: 2rem;')
+                i.fa-solid.fa-book
+                b  Recursos Favoritos
+        .w3-container
+            if (recursos)
+                .w3-row-padding#resourceContainer
+                  each elem in recursos
+                      .w3-col.s12.m6.l4.resource-card(data-name=elem.titulo, data-date=elem.dataRegisto)
+                        .w3-card-4.w3-margin
+                          .w3-container
+                            a(href=`/recurso/${elem._id}`, class="no-underline")
+                              b #{elem.titulo}
+                                  p.small #{elem.autor}
+            else
+                p.small Sem recursos favoritos
+    if userRole == -1
+        .w3-modal(id='selectAccountType', style='display: block')
+            .w3-modal-content.modal-content.w3-animate-zoom(style='padding: 0px; border-radius: 10px;')
+                header.w3-container.w3-blue(style='border-radius: 10px 10px 0 0; padding: 5px 20px;')
+                    h2(style='color: white; font-weight: bold; font-size: 2rem;') Bem-Vindo!
+                .w3-container(style='padding: 20px; background-color: #f0f2f5;')
+                    h4.highlight Obrigado por escolher a nossa plataforma de recursos online!
+                    h3 Antes de continuar, por favor selecione um tipo de utilizador:
+                    form(action="/role" method="POST")
+                        label
+                            i.fa-solid.fa-chalkboard-user
+                            b   Tipo de Utilizador:
+                        br
+                        input.w3-radio(type="radio" id="tipoConsumidor" name="role" value=0 required)
+                        label(for='tipoConsumidor') Consumidor
+                        input.w3-radio.w3-margin-left(type="radio" id="tipoProdutor" name="role" value=1 required)
+                        label(for='tipoProdutor') Produtor
+                        br
+                        .button-container.right
+                            button.w3-button.w3-blue(type="submit") Seguinte
+    script.
+        document.addEventListener('DOMContentLoaded', function() {
+          var filterInput = document.getElementById('filterInput');
+          var sortSelect = document.getElementById('sortSelect');
+          var resourceContainer = document.getElementById('resourceContainer');
+
+          filterInput.addEventListener('input', filterResources);
+          sortSelect.addEventListener('change', sortResources);
+
+          function filterResources() {
+            var filter = filterInput.value.toLowerCase();
+            var resourceCards = resourceContainer.getElementsByClassName('resource-card');
+
+            Array.from(resourceCards).forEach(function(card) {
+              var title = card.getAttribute('data-name').toLowerCase();
+              if (title.indexOf(filter) > -1) {
+                card.style.display = "";
+              } else {
+                card.style.display = "none";
+              }
+            });
+          }
+
+          function sortResources() {
+            var sortValue = sortSelect.value;
+            var resourceCards = Array.from(resourceContainer.getElementsByClassName('resource-card'));
+
+            resourceCards.sort(function(a, b) {
+              var nameA = a.getAttribute('data-name').toLowerCase();
+              var nameB = b.getAttribute('data-name').toLowerCase();
+              var dateA = new Date(a.getAttribute('data-date'));
+              var dateB = new Date(b.getAttribute('data-date'));
+
+              switch (sortValue) {
+                case 'alphabeticalAsc':
+                  return nameA.localeCompare(nameB);
+                case 'alphabeticalDesc':
+                  return nameB.localeCompare(nameA);
+                case 'dateAsc':
+                  return dateA - dateB;
+                case 'dateDesc':
+                  return dateB - dateA;
+                default:
+                  return 0;
+              }
+            });
+
+            resourceCards.forEach(function(card) {
+              resourceContainer.appendChild(card);
+            });
+          }
+        });

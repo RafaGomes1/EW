@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build: ./APP
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    networks:
+      - recursosNetwork
+
+  api:
+    container_name: api
+    build: ./API
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - recursosNetwork
+
+  auth:
+    container_name: auth
+    build: ./AUTH
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mongodb
+    networks:
+      - recursosNetwork
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - recursosNetwork
+
+  mongo-init:
+    image: mongo:latest
+    volumes:
+      - ./datasets:/datasets
+    networks:
+      - recursosNetwork
+
+networks:
+  recursosNetwork:
+    name: recursosNetwork
+    driver: bridge

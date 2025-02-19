@@ -1,0 +1,87 @@
+body {
+    background-color: #f0f2f5;
+    font-family: 'Arial', sans-serif;
+}
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-content header {
+    border-radius: 10px 10px 0 0;
+    padding: 5px 20px; /* Reduzindo o tamanho da barra */
+    text-align: center; /* Centralizando o texto */
+}
+
+.modal-content .w3-container {
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+header.container.w3-blue {
+    background-color: #007BFF !important;
+    color: white;
+}
+
+button.button.w3-blue {
+    background-color: #007BFF; /* Blue button color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 10px 0;
+}
+
+button.button.w3-blue:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.button-container {
+    margin-top: 20px;
+    overflow: hidden; /* Para garantir que o botão flutuante não saia do contêiner */
+}
+
+.button-container.right {
+    text-align: right; /* Garantir alinhamento à direita */
+}
+
+label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-top: 10px;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+h2, h3, h4 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2rem; /* Mantendo o tamanho da fonte */
+    font-weight: bold; /* Garantindo que o texto esteja em negrito */
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+
+h4 {
+    font-size: 1rem;
+}
+
+.highlight {
+    color: #007BFF; /* Destacar com a cor azul */
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    background-color: #e0f7fa;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}

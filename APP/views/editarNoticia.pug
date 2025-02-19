@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    .w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color:white')
+                b Editar Noticia
+        form.w3-container(method="POST")
+            fieldset 
+                legend Metadata
+                label Id
+                input.w3-input.w3-round(type="text" name="_id" value=Noticia._id readonly)
+                label data da Noticia
+                input.w3-input.w3-round(type="date" name="dataNoticia" value=Noticia.dataNoticia readonly)
+                label Recurso
+                input.w3-input.w3-round(type="text" name="idRecurso" value=Noticia.idRecurso readonly)
+                label Conteudo
+                textarea.w3-input.w3-round(name="conteudo")=Noticia.conteudo
+                label autor <!-- Ao editar uma noticia de uma outra pessoa, a pessoa que editou passa a ser o novo autor? -->
+                input.w3-input.w3-round(type="text" name="autor" value=Noticia.autor) 
+
+            br
+            button.w3-btn.w3-green.w3-mb-2(type="submit") 
+                b Guardar

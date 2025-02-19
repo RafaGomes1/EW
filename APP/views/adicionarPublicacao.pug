@@ -1,0 +1,84 @@
+extends layout
+
+block content
+    .w3-card-4
+        header.w3-container(style='background-color:SteelBlue')
+            h2(style='color:white')
+                b Criar Publicação
+        form#publicacaoForm.w3-container(method="POST" action="/publicacao/adicionar")
+            fieldset
+                label
+                    b Curso
+                select.w3-select.w3-round(name="cursoId" id="cursoId" required)
+                    option(value="" disabled selected) Selecione um Curso
+                    each curso in Cursos
+                        option(value=curso._id)=curso.designacao
+                
+                label
+                    b Recurso
+                select#recursoSelect.w3-select.w3-round(name="idRecurso")
+                    option(value="" disabled selected) Selecione um Recurso
+                input#noRecursoInput.w3-input.w3-round(type="text" value="Não existem Recursos" disabled style="display:none;")
+                
+                label
+                    b Conteúdo
+                input.w3-input.w3-round(type="text" name="conteudo" placeholder="Introduza um conteudo" required)
+                
+            br
+            button#publicarBtn.w3-btn.w3-green.w3-mb-2(type="submit") 
+                b Publicar
+
+    script.
+        var Recursos = !{JSON.stringify(Recursos)};
+        
+        // Função para atualizar o select de recursos com base no curso selecionado
+        function atualizarSelectRecursos(cursoId) {
+            var recursoSelect = document.getElementById('recursoSelect');
+            var noRecursoInput = document.getElementById('noRecursoInput');
+            recursoSelect.innerHTML = '<option value="" disabled selected>Selecione um Recurso</option>';
+            var recursosEncontrados = false;
+            
+            Recursos.forEach(function(recurso) {
+                if (recurso.cursoId === cursoId) {
+                    var option = document.createElement('option');
+                    option.value = recurso._id;
+                    option.textContent = recurso.titulo;
+                    recursoSelect.appendChild(option);
+                    recursosEncontrados = true;
+                }
+            });
+            
+            if (recursosEncontrados) {
+                recursoSelect.style.display = 'block';
+                recursoSelect.setAttribute('required', 'true');
+                noRecursoInput.style.display = 'none';
+            } else {
+                recursoSelect.style.display = 'none';
+                recursoSelect.removeAttribute('required');
+                noRecursoInput.style.display = 'block';
+            }
+        }
+        
+        // Evento change no select de curso
+        document.getElementById('cursoId').addEventListener('change', function() {
+            var cursoId = this.value;
+            atualizarSelectRecursos(cursoId);
+        });
+
+        // Evento submit do formulário
+        document.getElementById('publicacaoForm').addEventListener('submit', function(event) {
+            var recursoSelect = document.getElementById('recursoSelect');
+            var noRecursoInput = document.getElementById('noRecursoInput');
+            
+            // Verificar se o select de recurso está visível e se foi selecionado algum recurso
+            if (recursoSelect.style.display === 'block' && recursoSelect.value === '') {
+                alert('Por favor, selecione um recurso.');
+                event.preventDefault();
+            }
+            
+            // Verificar se o campo de entrada de recurso está visível
+            if (noRecursoInput.style.display === 'block') {
+                alert('Este curso não possui recursos disponíveis para publicação.');
+                event.preventDefault();
+            }
+        });

@@ -1,0 +1,16 @@
+FROM node
+# Create app directory
+WORKDIR /usr/src/app
+# Copy app source code
+COPY . .
+# Install app dependencies
+RUN npm install
+RUN npm install axios
+RUN npm install multer
+RUN npm install uuid
+RUN npm install mongoose
+RUN npm install express-session
+RUN npm install adm-zip
+#Expose port and start application
+EXPOSE 8080
+CMD [ "npm", "start" ]

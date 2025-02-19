@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-card-4
+    .curso-content(style='background-color:SteelBlue')
+      .button-and-info
+        a.button-circle.back(href='/')
+          i.fa.fa-arrow-left
+          span.popup-text Voltar 
+        header.w3-container
+          h2(style='color:white')
+            b Lista de publicacoes
+        a.button-circle.add(href='/publicacao/adicionar')
+          i.fa-plus
+          span.popup-text Adicionar Publicação
+    .w3-container
+      each publicacao in lPublicacoes
+        a(href=`/publicacao/${publicacao._id}` class="no-underline")
+          .w3-card-2.w3-margin
+            .curso-content
+              .w3-container.w3-padding
+                  h2= publicacao.autor
+                  each curso in lCursos
+                    if (publicacao.cursoId === curso._id)
+                      p Curso : #{curso.designacao}
+              if userRole === 2 || userId === publicacao.idAutor
+                .button-container-curso
+                  a.button-circle.edit(href=`/publicacao/edit/${publicacao._id}`)
+                    i.fa.fa-pencil
+                    span.popup-text Editar Publicação
+                  a.button-circle.remove(href=`/publicacao/delete/${publicacao._id}`)
+                    i.fa.fa-times
+                    span.popup-text Eliminar Publicação
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+    });

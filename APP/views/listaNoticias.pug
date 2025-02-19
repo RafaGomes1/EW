@@ -1,0 +1,58 @@
+extends layout
+
+block content
+  if message
+    .popup-message(style="display: none;")
+      p= message
+
+  .w3-card-4
+    .curso-content(style='background-color:SteelBlue')
+      .button-and-info
+        a.button-circle.back(href='/')
+          i.fa.fa-arrow-left
+          span.popup-text Voltar  
+        .header-and-button
+          header.w3-container
+            h2(style='color:white')
+              b Lista de Notícias
+          if userRole === 2
+            a.button-circle.add(href='/noticia/adicionar')
+              i.fa-plus
+              span.popup-text Adicionar Notícia
+    .w3-container
+      each noticia in lNoticias
+        a(href=`/noticia/${noticia._id}` class="no-underline")
+          .w3-card-2.w3-margin
+            .curso-content
+              .w3-container.w3-padding
+                  h2= noticia.titulo
+                  p Data: #{noticia.dataNoticia}
+                  p Conteúdo: #{noticia.conteudo}
+                  p Autor: #{noticia.autor}
+              if userRole === 2
+                .button-container-curso
+                  a.button-circle.edit(href=`/noticia/edit/${noticia._id}`)
+                    i.fa.fa-pencil
+                    span.popup-text Editar Notícia
+                  a.button-circle.remove(href=`/noticia/delete/${noticia._id}`)
+                    i.fa.fa-times
+                    span.popup-text Eliminar Notícia
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      var popup = document.querySelector('.popup-message');
+      if (popup) {
+        popup.style.display = 'block';
+        setTimeout(function() {
+          popup.classList.add('show');
+        }, 100); // Delay to allow CSS transition to work
+
+        // Remove the popup after 5 seconds
+        setTimeout(function() {
+          popup.classList.remove('show');
+          setTimeout(function() {
+            popup.style.display = 'none';
+          }, 500); // Match this duration with the CSS transition duration
+        }, 5000);
+      }
+    });

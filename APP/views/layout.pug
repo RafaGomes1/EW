@@ -1,0 +1,255 @@
+doctype html
+html
+  head
+    title #{title} - LearnMinder: Plataforma de Gestão de Recursos Educativos
+    link(rel='stylesheet', href='/stylesheets/w3.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/jquery.modal.css')
+    link(rel='icon', type='image/x-icon' href='/images/favicon.png')
+    script(src="/javascripts/jquery-3.7.1.min.js")
+    script(src="/javascripts/jquery.modal.min.js")
+    script(src="/javascripts/fileManager.js")
+    script(src="https://kit.fontawesome.com/ffb4151c72.js")
+    style.
+      .sidebar {
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: width 0.3s;
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+      }
+      .sidebar.closed {
+        width: 60px; /* Small width to show part of the sidebar */
+      }
+      .sidebar .logo-container {
+        display: flex;
+        width: 100%;
+      }
+      .sidebar img.logo {
+        width: 200px; /* Adjust the logo size */
+        transition: width 0.3s;
+        margin-left: 20px;
+        margin-right: -20px;
+        margin-top: -40px;
+      }
+      .sidebar.closed img.logo {
+        width: 0; /* Reduz a largura para zero */
+        visibility: hidden; /* Oculta a imagem */
+        opacity: 0; /* Define a opacidade como zero */
+        transition: width 0.3s, visibility 0s 0.3s, opacity 0.3s; /* Adiciona transição suave */
+        margin-right: -5px;
+      }
+      .sidebar a,
+      .sidebar button:not(.open-btn) {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        transition: opacity 0.3s;
+      }
+      .sidebar a:hover {
+        background-color: #575757;
+      }
+      .sidebar a.active {
+        background-color: #4CAF50;
+        color: white;
+      }
+      .sidebar.hidden-items a,
+      .sidebar.hidden-items button:not(.open-btn) {
+        opacity: 0;
+        pointer-events: none; /* Disable interactions when hidden */
+      }
+      .main-content {
+        margin-left: 260px; /* Same as the width of the sidebar */
+        padding: 20px;
+        transition: margin-left 0.3s;
+      }
+      .no-underline {
+        text-decoration: none;
+      }
+      .card {
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #ccc;
+        padding: 16px;
+        margin: 16px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      }
+      .card-content {
+        flex: 2;
+        margin-right: 16px;
+      }
+      .card-info {
+        border-top: 1px solid #ccc;
+        padding-top: 16px;
+      }
+      .card-info p {
+        margin: 0;
+      }
+      .card-info .info-label {
+        font-weight: bold;
+      }
+      .button-container {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .button-container.right {
+        justify-content: flex-end;
+      }
+      .card-list {
+        display: flex;
+        flex-direction: column;
+      }
+      .card h3 {
+        margin-top: 0;
+      }
+      .card-Recurso {
+        padding: 20px;
+        text-align: left;
+        margin: 20px auto;
+        width: 80%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      .button-Recurso {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .pub-card {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+        margin: 20px auto;
+        width: 80%;
+        max-width: 800px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      .pub-content-section {
+        flex: 3;
+        text-align: left;
+      }
+      .pub-info-section {
+        flex: 1;
+        text-align: left;
+        padding-left: 20px;
+      }
+      .pub-comments-section {
+        margin: 20px auto;
+        width: 80%;
+        max-width: 800px;
+      }
+      .pub-comment {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+      .pub-comment-author {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      .pub-comment-date {
+        font-style: italic;
+        margin-left: 5px;
+      }
+      .pub-comment-content {
+        flex: 1;
+        text-align: left;
+      }
+      .pub-form-group {
+        margin: 20px 0;
+      }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button[type='submit'] {
+        margin-top: 10px;
+      }
+      .radio-container {
+        display: inline-block;
+        margin-right: 10px;
+      }
+      .open-btn {
+        font-size: 20px;
+        background-color: #111;
+        color: white;
+        border: 2px solid white;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: left 0.3s;
+      }
+      .closed + .open-btn {
+        left: 10px; /* Position the button within the visible part of the closed sidebar */
+      }
+  body
+    .sidebar#sidebar
+      .logo-container
+        img.logo(src='/images/Logotipo.png', alt='Logo')
+        button.open-btn#toggleSidebar &lt;
+      a(href='/home')
+        i.fa-solid.fa-house
+        b  Página Inicial  
+      a(href='/profile')
+        i.fa-solid.fa-user
+        b  O meu perfil
+      a(href='/noticia' class=(activePage === 'noticias' ? 'active' : '')) 
+        i.fa-solid.fa-newspaper
+        b  Notícias
+      a(href='/curso') 
+        i.fa-solid.fa-book
+        b  Todos os cursos
+      if userRole == 1 || userRole == 2
+        a(href='/curso/produtor')
+          i.fa-solid.fa-chalkboard-user
+          b  Os meus Cursos
+      a(href='/publicacao') 
+        i.fa-solid.fa-file-lines
+        b  Publicações
+      a(href='/logout')
+        i.fa-solid.fa-right-from-bracket
+        b  Terminar sessão
+    .main-content#mainContent
+      block content
+
+    script.
+      document.getElementById('toggleSidebar').addEventListener('click', function () {
+        var sidebar = document.getElementById('sidebar');
+        var mainContent = document.getElementById('mainContent');
+        if (sidebar.classList.contains('closed')) {
+          sidebar.classList.remove('closed');
+          sidebar.classList.remove('hidden-items');
+          mainContent.style.marginLeft = '260px';
+          this.innerHTML = '&lt;';  // Set the button text to "<"
+        } else {
+          sidebar.classList.add('closed');
+          sidebar.classList.add('hidden-items');
+          mainContent.style.marginLeft = '60px';
+          this.innerHTML = '&gt;';  // Set the button text to ">"
+        }
+      });

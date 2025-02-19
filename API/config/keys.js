@@ -1,0 +1,1 @@
+module.exports.secretKey = 'EngWeb2024Grupo40'

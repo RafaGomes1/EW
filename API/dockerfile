@@ -1,0 +1,11 @@
+FROM node
+# Create app directory
+WORKDIR /usr/src/app
+# Copy app source code
+COPY . .
+# Install app dependencies
+RUN npm install
+RUN npm install jsonwebtoken
+#Expose port and start application
+EXPOSE 3000
+CMD [ "npm", "start" ]
