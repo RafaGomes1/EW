@@ -138,12 +138,12 @@ O Projeto atingiu os objetivos estabelecidos, fornecendo uma aplicação web rob
 
 <h3 align="center">🚀 Colaboradores 🚀</h3>
 
----
-
-<h3 align="center"> 🎖️ Nota - 18 /  20 🎖️ </h3>
-
 <div align="center">
 
 | [Carlos Filipe](https://github.com/cfad98) | [Lucas Oliveira](https://github.com/LucasOli20) | [Mike Pinto](https://github.com/mrmikept) | [Rafael Gomes](https://github.com/RafaGomes1) |
 
 </div>
+
+---
+
+<h3 align="center"> 🎖️ Nota - 18 /  20 🎖️ </h3>
